@@ -10,6 +10,9 @@ https://forums.alliedmods.net/showthread.php?p=2767376
 - Sourcecolors (include file) - https://github.com/Ilusion9/sourcecolors-inc-sm
 - Intmap (include file) - https://github.com/Ilusion9/intmap-inc-sm
 
+# ConVars:
+sm_maprestrictions_touch_alert 1 - Alert players when they touch a restricted zone?
+
 # How to add a zone?
 Use devzones (https://forums.alliedmods.net/showthread.php?t=224839) and copy the zone coordinates in maprestrictions config.
 
