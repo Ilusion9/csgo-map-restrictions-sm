@@ -14,4 +14,4 @@ https://forums.alliedmods.net/showthread.php?p=2767376
 Use devzones (https://forums.alliedmods.net/showthread.php?t=224839) and copy the zone coordinates in maprestrictions config.
 
 # Bugs:
-Weapons can go through walls and cannot be picked through them. But the C4 cannot go through them.
+Weapons can go through walls and cannot be picked through them, but the C4 is an exception.
