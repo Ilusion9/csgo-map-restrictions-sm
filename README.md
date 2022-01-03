@@ -15,6 +15,3 @@ sm_maprestrictions_touch_alert 1 - Alert players when they touch a restricted zo
 
 # How to add a zone?
 Use devzones (https://forums.alliedmods.net/showthread.php?t=224839) and copy the zone coordinates in maprestrictions config.
-
-# Bugs:
-Weapons can go through walls and cannot be picked through them, but the C4 is an exception.
