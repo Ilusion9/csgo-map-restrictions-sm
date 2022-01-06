@@ -268,7 +268,7 @@ public void SDK_OnZoneTouch_Post(int entity, int other)
 	}
 	
 	char buffer[256];
-	Format(buffer, sizeof(buffer), "%t", "Map Restriction Warning", buffer, restrictInfo.limit);
+	Format(buffer, sizeof(buffer), "%t", "Map Restriction Warning", zoneName, restrictInfo.limit);
 	
 	CRemoveTags(buffer, sizeof(buffer));
 	PrintCenterText(other, buffer);
@@ -332,7 +332,7 @@ public Action Timer_OnFreezeTimeEnd(Handle timer, any data)
 					strcopy(zoneName, sizeof(zoneName), restrictInfo.name);
 				}
 				
-				CPrintToChat(i, "\x04[Map Restrictions]\x01 %t", "Map Restriction Warning", zoneName, restrictInfo.limit);
+				CPrintToChat(j, "\x04[Map Restrictions]\x01 %t", "Map Restriction Warning", zoneName, restrictInfo.limit);
 			}
 		}
 	}
