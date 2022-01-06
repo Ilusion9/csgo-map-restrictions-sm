@@ -39,10 +39,11 @@ enum struct ZoneInfo
 
 enum struct RestrictInfo
 {
+	bool useTranslation;
+	char name[256];
 	int limit;
 	int rangeStart;
 	int rangeEnd;
-	char name[256];
 }
 
 int g_BeamModel;
@@ -83,7 +84,7 @@ public void OnMapStart()
 }
 
 public void OnConfigsExecuted()
-{
+{	
 	char path[PLATFORM_MAX_PATH];
 	KeyValues kv = new KeyValues("Map Config");
 	
@@ -99,9 +100,15 @@ public void OnConfigsExecuted()
 				do
 				{
 					RestrictInfo restrictInfo;
-					restrictInfo.limit = kv.GetNum("limit");
 					restrictInfo.rangeStart = g_List_Zones.Length;
+					
+					restrictInfo.limit = kv.GetNum("limit");
 					kv.GetString("name", restrictInfo.name, sizeof(RestrictInfo::name));
+					
+					if (kv.GetNum("translate"))
+					{
+						restrictInfo.useTranslation = true;
+					}
 					
 					if (kv.JumpToKey("zones"))
 					{
@@ -185,7 +192,7 @@ public void OnConfigsExecuted()
 }
 
 public void OnMapEnd()
-{
+{	
 	g_List_Zones.Clear();
 	g_List_Restrictions.Clear();
 	
@@ -220,7 +227,7 @@ public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 public void ConVarChange_FreezeTime(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	if (IsValveWarmupPeriod() || !IsFreezeTimePeriod())
+	if (!g_Timer_FreezeEnd)
 	{
 		return;
 	}
@@ -250,8 +257,18 @@ public void SDK_OnZoneTouch_Post(int entity, int other)
 	RestrictInfo restrictInfo;
 	g_List_Restrictions.GetArray(index, restrictInfo);
 	
+	char zoneName[256];
+	if (restrictInfo.useTranslation)
+	{
+		Format(zoneName, sizeof(zoneName), "%T", restrictInfo.name, other);
+	}
+	else
+	{
+		strcopy(zoneName, sizeof(zoneName), restrictInfo.name);
+	}
+	
 	char buffer[256];
-	Format(buffer, sizeof(buffer), "%t", "Map Restriction Warning", restrictInfo.name, restrictInfo.limit);
+	Format(buffer, sizeof(buffer), "%t", "Map Restriction Warning", buffer, restrictInfo.limit);
 	
 	CRemoveTags(buffer, sizeof(buffer));
 	PrintCenterText(other, buffer);
@@ -298,7 +315,25 @@ public Action Timer_OnFreezeTimeEnd(Handle timer, any data)
 		
 		if (isRestricted)
 		{
-			CPrintToChatAll("\x04[Map Restrictions]\x01 %t", "Map Restriction Warning", restrictInfo.name, restrictInfo.limit);
+			char zoneName[256];
+			for (int j = 1; j <= MaxClients; j++)
+			{
+				if (!IsClientInGame(j) || IsFakeClient(j))
+				{
+					continue;
+				}
+				
+				if (restrictInfo.useTranslation)
+				{
+					Format(zoneName, sizeof(zoneName), "%T", restrictInfo.name, j);
+				}
+				else
+				{
+					strcopy(zoneName, sizeof(zoneName), restrictInfo.name);
+				}
+				
+				CPrintToChat(i, "\x04[Map Restrictions]\x01 %t", "Map Restriction Warning", zoneName, restrictInfo.limit);
+			}
 		}
 	}
 	
@@ -501,11 +536,6 @@ void SetLowerBound(any& value, any lowerLimit)
 bool IsValveWarmupPeriod()
 {
 	return view_as<bool>(GameRules_GetProp("m_bWarmupPeriod"));
-}
-
-bool IsFreezeTimePeriod()
-{
-	return view_as<bool>(GameRules_GetProp("m_bFreezePeriod"));
 }
 
 bool IsEntityClient(int client)
