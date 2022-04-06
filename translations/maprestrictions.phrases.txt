@@ -3,6 +3,6 @@
 	"Map Restriction Warning"
 	{
 		"#format"		"{1:s},{2:d}"
-		"en"			"{$orange}{1}{$default} is restricted this round due to fewer CTs than{$lightred} {2}."
+		"en"			"{color:orange}{1}{$default} is restricted this round due to fewer CTs than{color:lightred} {2}."
 	}
 }
